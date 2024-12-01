@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include "macros.h"
 
-void printMatrix(int matrix[MAX][MAX], int n);
-void printMatrixInversa(float matrix[MAX][MAX], int n);
+void printMatrix(int **matrix, int n);
+void printMatrixInversa(float **matrix, int n);
 void cleanConsole();
 
 // semplice print di una matrice
-void printMatrix(int matrix[MAX][MAX], int n) {
+void printMatrix(int **matrix, int n) {
 
     for (int i=0;i<n;i++) {
         printf(BLU "[ " RESET);
@@ -18,7 +18,7 @@ void printMatrix(int matrix[MAX][MAX], int n) {
 }
 
 // print della matrice inversa (differenza è che matrix_inversa[][] è un float)
-void printMatrixInversa(float matrix[MAX][MAX], int n) {
+void printMatrixInversa(float **matrix, int n) {
 
     for (int i=0;i<n;i++) {
         printf(BLU "[ " RESET);

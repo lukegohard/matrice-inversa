@@ -1,17 +1,17 @@
 #include <stdbool.h>
 #include "macros.h"
 
-int calcolaDeterminante(int matrix[MAX][MAX], int n);
+int calcolaDeterminante(int **matrix, int n);
 
-bool esisteRigaZeri(int matrix[MAX][MAX], int n);
-bool esisteColonnaZeri(int matrix[MAX][MAX], int n);
-bool esistonoRigheUguali(int matrix[MAX][MAX], int n);
-bool esistonoColonneUguali(int matrix[MAX][MAX], int n);
+bool esisteRigaZeri(int **matrix, int n);
+bool esisteColonnaZeri(int **matrix, int n);
+bool esistonoRigheUguali(int **matrix, int n);
+bool esistonoColonneUguali(int **matrix, int n);
 
-bool sonoRigheUguali(int matrix[MAX][MAX], int n, int row1, int row2);
-bool sonoColonneUguali(int matrix[MAX][MAX], int n, int col1, int col2);
+bool sonoRigheUguali(int **matrix, int n, int row1, int row2);
+bool sonoColonneUguali(int **matrix, int n, int col1, int col2);
 
-int calcolaDeterminante(int matrix[MAX][MAX], int n) {
+int calcolaDeterminante(int **matrix, int n) {
     
     // matrice 1x1
     if (n == 1) {
@@ -33,7 +33,21 @@ int calcolaDeterminante(int matrix[MAX][MAX], int n) {
     int det = 0;
     for (int col=0;col<n;col++) {
 
-        int sub_matrix[MAX][MAX], sub_n = n-1;
+        int sub_n = n-1;
+
+        int **sub_matrix = malloc(n * sizeof(int *)); // Allocazione delle righe
+        if (sub_matrix == NULL) {
+            printf(RED"Errore nell'allocazione di memoria.\n" RESET);
+            return 1;
+        }
+
+        for (int i = 0; i < n; i++) {
+            sub_matrix[i] = malloc(n * sizeof(int)); // Allocazione delle colonne
+            if (sub_matrix[i] == NULL) {
+                printf(RED"Errore nell'allocazione di memoria.\n" RESET);
+                return 1;
+            }
+        }
 
         for (int row=1; row<n;row++) {
             int sub_col = 0;
@@ -45,13 +59,19 @@ int calcolaDeterminante(int matrix[MAX][MAX], int n) {
             }
         }
         det += matrix[0][col] * (col % 2 == 0 ? 1 : -1) * calcolaDeterminante(sub_matrix,sub_n);
+
+
+        for (int i = 0; i < n; i++) {
+            free(sub_matrix[i]); // Libera ciascuna riga
+        }
+        free(sub_matrix);
     }
 
     return det;
 }
 
 // verifica se in tutta la matrice è presente una riga composta interamente da 0
-bool esisteRigaZeri(int matrix[MAX][MAX], int n) {
+bool esisteRigaZeri(int **matrix, int n) {
 
     for (int i=0;i<n;i++) {
     
@@ -72,7 +92,7 @@ bool esisteRigaZeri(int matrix[MAX][MAX], int n) {
 }
 
 // verifica se in tutta la matrice è presente una colonna composta interamente da 0
-bool esisteColonnaZeri(int matrix[MAX][MAX], int n) {
+bool esisteColonnaZeri(int **matrix, int n) {
     
     for (int i=0;i<n;i++) {
     
@@ -93,7 +113,7 @@ bool esisteColonnaZeri(int matrix[MAX][MAX], int n) {
 }
 
 // verifica se in tutta la matrice sono presenti due righe uguali
-bool esistonoRigheUguali(int matrix[MAX][MAX], int n) {
+bool esistonoRigheUguali(int **matrix, int n) {
 
     for (int i=0;i<n-1;i++) {
         for (int j=i+1;j<n;j++) {
@@ -106,7 +126,7 @@ bool esistonoRigheUguali(int matrix[MAX][MAX], int n) {
 }
 
 // verifica se in tutta la matrice sono presenti due colonne uguali
-bool esistonoColonneUguali(int matrix[MAX][MAX], int n) {
+bool esistonoColonneUguali(int **matrix, int n) {
 
     for (int i=0;i<n-1;i++) {
         for (int j=i+1;j<n;j++) {
@@ -119,7 +139,7 @@ bool esistonoColonneUguali(int matrix[MAX][MAX], int n) {
 }
 
 // prende in input la matrice e due indici di due righe diverse e verifica se siano uguali
-bool sonoRigheUguali(int matrix[MAX][MAX], int n, int row1, int row2) {
+bool sonoRigheUguali(int **matrix, int n, int row1, int row2) {
 
     for (int col=0;col<n;col++) {
         if (matrix[row1][col] != matrix[row2][col]) {
@@ -130,7 +150,7 @@ bool sonoRigheUguali(int matrix[MAX][MAX], int n, int row1, int row2) {
 }
 
 // prende in input la matrice e due indici di due colonne diverse e verifica se siano uguali
-bool sonoColonneUguali(int matrix[MAX][MAX], int n, int col1, int col2) {
+bool sonoColonneUguali(int **matrix, int n, int col1, int col2) {
 
     for (int row=0;row<n;row++) {
         if (matrix[row][col1] != matrix[row][col2]) {

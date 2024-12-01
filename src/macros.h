@@ -1,6 +1,3 @@
-// Massima dimensione della matrice quadrata NxN
-#define MAX 10
-
 // Macro per output colorato in console
 
 #define RESET "\x1B[0m"
